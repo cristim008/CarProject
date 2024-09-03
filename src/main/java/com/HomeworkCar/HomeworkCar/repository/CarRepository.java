@@ -1,6 +1,6 @@
 package com.HomeworkCar.HomeworkCar.repository;
 
-import com.HomeworkCar.HomeworkCar.persistance.dao.Car;
+import com.HomeworkCar.HomeworkCar.persistance.entities.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -3,21 +3,23 @@ package com.HomeworkCar.HomeworkCar.controller.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CarDto {
+public class UserDto {
 
     private Long id;
 
-    private String model;
+    private String username;
 
-    private String type;
+    private String email;
 
-    private int year;
+    private String password;
 
-    private int price;
+
 
 
 }

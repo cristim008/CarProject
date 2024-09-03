@@ -1,10 +1,10 @@
 package com.HomeworkCar.HomeworkCar.controller;
 
 import com.HomeworkCar.HomeworkCar.controller.dto.CarDto;
-import com.HomeworkCar.HomeworkCar.controller.dto.PriceTagDto;
-import com.HomeworkCar.HomeworkCar.persistance.dao.Car;
+import com.HomeworkCar.HomeworkCar.mappers.CarMapper;
+import com.HomeworkCar.HomeworkCar.persistance.entities.Car;
 import com.HomeworkCar.HomeworkCar.service.CarService;
-import com.HomeworkCar.HomeworkCar.service.PriceTagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/cars")
+@RequiredArgsConstructor
 public class CarController {
 
     private final CarService carService;
-    private final PriceTagService priceTagService;
 
 
-    public CarController(CarService carService, PriceTagService priceTagService) {
-        this.carService = carService;
-        this.priceTagService = priceTagService;
-    }
 
     @GetMapping
 
@@ -30,8 +26,8 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponsePayLoad<CarDto>> getCarById(@PathVariable int id) {
-        CarDto carDto = carService.getCarsById(id);
+    public ResponseEntity<ResponsePayLoad<CarDto>> getCarById(@PathVariable long id) {
+        CarDto carDto = carService.getCarById(id);
         if (carDto != null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponsePayLoad<>(carDto, "UserDto found"));
@@ -45,7 +41,7 @@ public class CarController {
     @GetMapping("/{id}/{model}")
     public CarDto getCarByIdAndPrintModel(@PathVariable int id, @PathVariable String model) {
         System.out.println("id :" + id + "," + "model :" + model);
-        return carService.getCarsById(id);
+        return carService.getCarById(id);
     }
 
     @GetMapping("/car")
@@ -66,22 +62,10 @@ public class CarController {
     @PutMapping
 
     public ResponseEntity<String> updateCar(@RequestParam int id, @RequestBody CarDto carDto) {
-        carService.updateAndLoadCarData(carDto, id);
+        carService.updateCar(carDto, id);
         return ResponseEntity.status(HttpStatus.CREATED).body("CarDto added successfully");
 
 
-    }
-
-    @PostMapping("/{carId}/price")
-    public ResponseEntity<String> addPriceTag(@PathVariable Long carId, @RequestBody PriceTagDto priceTagDto) {
-        priceTagService.addPriceTag(priceTagDto, carId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("PriceTag added successfully");
-    }
-
-    @PutMapping("/price/{id}")
-    public ResponseEntity<String> updatePriceTag(@PathVariable Long id, @RequestBody PriceTagDto priceTagDto) {
-        priceTagService.updatePriceTag(priceTagDto, id);
-        return ResponseEntity.status(HttpStatus.OK).body("PriceTag updated successfully");
     }
 
 

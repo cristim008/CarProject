@@ -1,8 +1,10 @@
 package com.HomeworkCar.HomeworkCar.service;
 
 import com.HomeworkCar.HomeworkCar.controller.dto.CarDto;
-import com.HomeworkCar.HomeworkCar.persistance.dao.Car;
+import com.HomeworkCar.HomeworkCar.mappers.CarMapper;
+import com.HomeworkCar.HomeworkCar.persistance.entities.Car;
 import com.HomeworkCar.HomeworkCar.repository.CarRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,79 +15,58 @@ import java.util.stream.Collectors;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final CarMapper carMapper;
 
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository, CarMapper carMapper) {
         this.carRepository = carRepository;
+        this.carMapper = carMapper;
     }
-
 
     public List<CarDto> getCars() {
         return carRepository.findAll().stream()
-                .map(car -> CarDto.builder()
-                        .model(car.getModel())
-                        .type(car.getType())
-                        .year(car.getYear())
-                        .build())
-                .toList();
+                .map(carMapper::toDto) // Folosește CarMapper pentru conversie
+                .collect(Collectors.toList());
     }
 
-    public CarDto getCarsById(long id) {
+    public CarDto getCarById(long id) {
         Optional<Car> optionalCar = carRepository.findById(id);
-        if (optionalCar.isEmpty()) {
-            return null;
-        }
-
-        Car car = optionalCar.get();
-
-        return CarDto.builder()
-                .model(car.getModel())
-                .type(car.getType())
-                .year(car.getYear())
-                .build();
+        return optionalCar.map(carMapper::toDto).orElse(null);
     }
 
-
-        public List<CarDto> getCarsByFilters(String model, String type, Integer year) {
-            List<Car> filteredCars = carRepository.findCarsByFilters(model, type, year);
-            return filteredCars.stream()
-                    .map(car -> CarDto.builder()
-                            .model(car.getModel())
-                            .type(car.getType())
-                            .year(car.getYear())
-                            .build())
-                    .collect(Collectors.toList());
+    public List<CarDto> getCarsByFilters(String model, String type, Integer year) {
+        List<Car> filteredCars = carRepository.findCarsByFilters(model, type, year);
+        return filteredCars.stream()
+                .map(carMapper::toDto)
+                .collect(Collectors.toList());
 
     }
 
     public void addCar(CarDto carDto) {
-        Car car = new Car();
-        car.setModel(carDto.getModel());
-        car.setType(carDto.getType());
-        car.setYear(carDto.getYear());
-        carRepository.save(car);
+        carRepository.save(carMapper.toEntity(carDto));
     }
 
-    public void addCar(CarDto carDto, long id) {
-        Car car = new Car();
-        car.setId(id);
-        car.setModel(carDto.getModel());
-        car.setType(carDto.getType());
-        car.setYear(carDto.getYear());
-        carRepository.save(car);
+    public void updateCar(CarDto carDto, long id) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Car not found "));
+
+        if (carDto.getModel() != null) {
+            existingCar.setModel(carDto.getModel());
+        }
+        if (carDto.getType() != null) {
+            existingCar.setType(carDto.getType());
+        }
+        if (carDto.getYear() != 0) {
+            existingCar.setYear(carDto.getYear());
+        }
+        if (carDto.getPrice() != 0) {
+            existingCar.setPrice(carDto.getPrice());
+        }
+
+        carRepository.save(existingCar);
     }
 
     public void removeCarById(long id) {
         carRepository.deleteById(id);
     }
-
-    public void updateAndLoadCarData(CarDto newCarDto, long id) {
-        Car car = carRepository.findById(id).orElseThrow();
-        car.setModel(newCarDto.getModel() != null ? newCarDto.getModel() : car.getModel());
-        car.setType(newCarDto.getType() != null ? newCarDto.getType() : car.getType());
-        car.setYear(newCarDto.getYear() != 0 ? newCarDto.getYear() : car.getYear());
-
-        carRepository.save(car);
-    }
-
-
 }
+
