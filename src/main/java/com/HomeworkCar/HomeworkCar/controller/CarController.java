@@ -30,10 +30,10 @@ public class CarController {
         CarDto carDto = carService.getCarById(id);
         if (carDto != null) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponsePayLoad<>(carDto, "UserDto found"));
+                    .body(new ResponsePayLoad<>(carDto, "CarDto found"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponsePayLoad<>(null, "UserDto not found"));
+                    .body(new ResponsePayLoad<>(null, "CarDto not found"));
         }
 
     }
