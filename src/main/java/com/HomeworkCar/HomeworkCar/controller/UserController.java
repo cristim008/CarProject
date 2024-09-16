@@ -27,25 +27,15 @@ public class UserController {
     @PostMapping("/register")
 
     public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
-        try {
-            userService.registerUser(userDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("The user was added succesfully");
-        } catch (UserAlreadyExist e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exist " + e.getMessage());
-        } catch (EmailAlreadyUsedException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exist " + e.getMessage());
-        }
-
+        userService.registerUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("The user was added successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequestDto loginRequestDto) {
-        try {
-            UserDto loggedInUser = userService.loginUser(loginRequestDto);
-            return ResponseEntity.ok("Login succesful for user : " + loggedInUser.getUsername());
-        } catch (UserNotFoundException | InvalidPasswordException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        UserDto loggedInUser = userService.loginUser(loginRequestDto);
+        return ResponseEntity.ok("Login successful for user : " + loggedInUser.getUsername());
+
     }
 
     @GetMapping("/all")
@@ -56,15 +46,11 @@ public class UserController {
 
 
     @GetMapping("/user/{id}")
-
     public ResponseEntity<ResponsePayLoad<UserDto>> getUserById(@PathVariable long id) {
+        UserDto userDto = userService.getUserById(id);
 
-        Optional<UserDto> userDto = userService.getUserById(id);
-
-        return userDto.map(dto -> ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponsePayLoad<>(dto, "User has been found"))).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ResponsePayLoad<>(null, "User not found")));
-
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponsePayLoad<>(userDto, "User has been found"));
     }
 
 

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name="cars")
@@ -36,6 +38,9 @@ public class Car {
     @NotNull
     @Positive
     private  int price;
+
+    @OneToMany(mappedBy = "car")
+    private List<Order> orders;
 
 
 

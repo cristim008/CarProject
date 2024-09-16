@@ -31,20 +31,19 @@ public class UserService {
 
     public void registerUser(UserDto userDto) {
         if (userRepository.existsByUsername(userDto.getUsername())) {
-            throw new UserAlreadyExist("");
+            throw new UserAlreadyExist("User already exist ");
         }
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new EmailAlreadyUsedException("");
+            throw new EmailAlreadyUsedException("Email already exist");
         }
 
         User user = userMapper.toUserEntity(userDto);
         userRepository.save(user);
-
     }
 
     public UserDto loginUser(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email : " + loginRequestDto.getEmail()));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + loginRequestDto.getEmail()));
 
         if (user.getPassword().equals(loginRequestDto.getPassword())) {
             return userMapper.toUserDto(user);
@@ -54,16 +53,18 @@ public class UserService {
     }
 
 
+
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 
-    public Optional<UserDto> getUserById(long id) {
+    public UserDto getUserById(long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + "not found"));
-        return Optional.of(userMapper.toUserDto(user));
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
+        return userMapper.toUserDto(user);
     }
+
 
 
 }
