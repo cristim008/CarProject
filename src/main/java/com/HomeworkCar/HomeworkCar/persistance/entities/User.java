@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name="users")
@@ -29,5 +31,7 @@ public class User {
     private String password;
 
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 
 }
