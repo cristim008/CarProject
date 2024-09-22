@@ -1,6 +1,7 @@
 package com.HomeworkCar.HomeworkCar.service;
 
 import com.HomeworkCar.HomeworkCar.controller.dto.CarDto;
+import com.HomeworkCar.HomeworkCar.exceptions.CarNotFoundException;
 import com.HomeworkCar.HomeworkCar.mappers.CarMapper;
 import com.HomeworkCar.HomeworkCar.persistance.entities.Car;
 import com.HomeworkCar.HomeworkCar.repository.CarRepository;
@@ -47,7 +48,7 @@ public class CarService {
 
     public void updateCar(CarDto carDto, long id) {
         Car existingCar = carRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Car not found "));
+                .orElseThrow(() -> new CarNotFoundException("Car not found "));
 
         if (carDto.getModel() != null) {
             existingCar.setModel(carDto.getModel());
@@ -67,6 +68,17 @@ public class CarService {
 
     public void removeCarById(long id) {
         carRepository.deleteById(id);
+    }
+
+    public Car getCarEntityId(Long carId) {
+        return carRepository.findById(carId)
+                .orElseThrow(() -> new CarNotFoundException("Car not found with id :" + carId));
+    }
+
+    public int getCarsPriceById(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarNotFoundException("Car not found with ID: " + carId));
+        return car.getPrice();
     }
 }
 

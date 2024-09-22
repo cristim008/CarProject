@@ -6,18 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @Builder
-public class UserDto {
+@AllArgsConstructor
+public class WalletDto {
+
 
     private Long id;
-
-    private String username;
-
-    private String email;
-
-    private String password;
-
-    private int walletBalance;
-
+    private int balance;
+    private Long userId;
 }

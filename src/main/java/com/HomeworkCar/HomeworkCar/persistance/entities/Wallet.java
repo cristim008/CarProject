@@ -8,32 +8,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Data
 @Entity
-@Table(name="users")
-@Builder
-@NoArgsConstructor
+@Data
+@Table(name = "wallet")
 @AllArgsConstructor
-public class User {
+@NoArgsConstructor
+@Builder
+public class Wallet {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @NotNull
-    private String username;
+    private int balance;
 
+
+    @OneToOne
     @NotNull
-    private String email;
-
-    @NotNull
-    private String password;
-
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
-
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Wallet wallet;
+    @JoinColumn(name = "user_id",unique = true)
+    private User user;
 }

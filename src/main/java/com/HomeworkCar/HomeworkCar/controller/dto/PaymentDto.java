@@ -3,21 +3,17 @@ package com.HomeworkCar.HomeworkCar.controller.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class PaymentDto {
 
     private Long id;
-
-    private String username;
-
-    private String email;
-
-    private String password;
-
-    private int walletBalance;
-
+    private int amount;
+    private String paymentMethod;
+    private Long userId;
+    private Long orderId;
 }

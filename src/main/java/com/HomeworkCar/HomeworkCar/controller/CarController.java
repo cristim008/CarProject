@@ -10,13 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/cars")
 @RequiredArgsConstructor
 public class CarController {
 
     private final CarService carService;
-
 
 
     @GetMapping
@@ -46,26 +46,33 @@ public class CarController {
 
     @GetMapping("/car")
     public List<CarDto> getCarsByFilters(@RequestParam(required = false) String model,
-                                           @RequestParam(required = false) Integer year,
-                                           @RequestParam(required = false) String type){
-        return carService.getCarsByFilters(model,type,year);
+                                         @RequestParam(required = false) Integer year,
+                                         @RequestParam(required = false) String type) {
+        return carService.getCarsByFilters(model, type, year);
     }
+
     @PostMapping
 
     public ResponseEntity<String> addCar(@RequestBody CarDto carDto) {
         carService.addCar(carDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("CarDto added successfully");
-
     }
 
     @PutMapping
 
     public ResponseEntity<String> updateCar(@RequestParam int id, @RequestBody CarDto carDto) {
         carService.updateCar(carDto, id);
-        return ResponseEntity.status(HttpStatus.CREATED).body("CarDto added successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Car added successfully");
+    }
 
+    @DeleteMapping
 
+    public ResponseEntity<String> deleteCar(@PathVariable long id) {
+        carService.removeCarById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("The car with ID : " + id + "Has been deleted");
     }
 
 

@@ -16,6 +16,6 @@ public class OrderDto {
     private LocalDateTime orderDate;
     private OrderStatus orderStatus;
     private int quantity;
-    private UserDto user;
-    private CarDto car;
+    private Long userId;
+    private Long carId;
 }

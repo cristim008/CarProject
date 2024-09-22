@@ -13,6 +13,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .walletBalance(user.getWallet() != null ? user.getWallet().getBalance() : 0)
                 .build();
     }
 

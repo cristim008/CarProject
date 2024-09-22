@@ -39,4 +39,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
+
+    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
+    private Payment payment;
 }

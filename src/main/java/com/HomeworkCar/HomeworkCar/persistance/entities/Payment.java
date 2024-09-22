@@ -8,32 +8,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-@Data
 @Entity
-@Table(name="users")
-@Builder
+@Data
+@Table(name = "payments")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Builder
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String username;
+    @Positive
+    private int amount;
 
     @NotNull
-    private String email;
+    private  String paymentMethod;
 
     @NotNull
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "order_id",unique = true)
+    private Order order;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Wallet wallet;
+    private boolean isSuccessful;
 }

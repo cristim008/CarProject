@@ -9,12 +9,10 @@ import com.HomeworkCar.HomeworkCar.exceptions.UserNotFoundException;
 import com.HomeworkCar.HomeworkCar.mappers.UserMapper;
 import com.HomeworkCar.HomeworkCar.persistance.entities.User;
 import com.HomeworkCar.HomeworkCar.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +34,7 @@ public class UserService {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new EmailAlreadyUsedException("Email already exist");
         }
-
-        User user = userMapper.toUserEntity(userDto);
+    User user=userMapper.toUserEntity(userDto);
         userRepository.save(user);
     }
 
@@ -54,7 +51,7 @@ public class UserService {
 
 
 
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers(User user) {
         List<User> users = userRepository.findAll();
         return users.stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
@@ -63,6 +60,16 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
         return userMapper.toUserDto(user);
+    }
+
+    public User getUserEntityById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+    }
+
+    public User findByUsername (String username){
+        return userRepository.findByUsername(username)
+                .orElseThrow(()-> new UserNotFoundException("User not found "));
     }
 
 
