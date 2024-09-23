@@ -74,7 +74,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registerUser_EmailAlreadyExist_ThrowEmailAlreadyExistException(){
+    void registerUser_EmailAlreadyExist_ThrowEmailAlreadyExistException() {
         //Given
         UserDto userDto = new UserDto(1L,
                 "Cristi",
@@ -86,16 +86,16 @@ class UserServiceTest {
         when(mockedUserRepository.existsByEmail(userDto.getEmail())).thenReturn(true);
 
         //Then
-        assertThrows(EmailAlreadyUsedException.class,()->userService.registerUser(userDto));
+        assertThrows(EmailAlreadyUsedException.class, () -> userService.registerUser(userDto));
     }
 
     @Test
-    void loginUser_ValidCredentials_ReturnUserDto(){
+    void loginUser_ValidCredentials_ReturnUserDto() {
         //Given
 
-        LoginRequestDto loginRequestDto= new LoginRequestDto("cristi233@gmail.com","password123");
+        LoginRequestDto loginRequestDto = new LoginRequestDto("cristi233@gmail.com", "password123");
 
-        User user=new User();
+        User user = new User();
         user.setEmail("cristi113@gmail.com");
         user.setPassword("password123");
 
@@ -110,16 +110,16 @@ class UserServiceTest {
         when(mockedUserMapper.toUserDto(user)).thenReturn(userDto);
 
         //Then
-        UserDto result=userService.loginUser(loginRequestDto);
-        assertEquals(userDto,result);
+        UserDto result = userService.loginUser(loginRequestDto);
+        assertEquals(userDto, result);
         verify(mockedUserRepository).findByEmail(loginRequestDto.getEmail());
         verify(mockedUserMapper).toUserDto(user);
     }
 
     @Test
-    void loginUser_UserNotFound_ThrowsUserNotFoundException(){
+    void loginUser_UserNotFound_ThrowsUserNotFoundException() {
         //Given
-        LoginRequestDto loginRequestDto= new LoginRequestDto("cristi233@gmail.com","password123");
+        LoginRequestDto loginRequestDto = new LoginRequestDto("cristi233@gmail.com", "password123");
 
         //When
         when(mockedUserRepository.findByEmail(loginRequestDto.getEmail())).thenReturn(Optional.empty());
@@ -130,11 +130,11 @@ class UserServiceTest {
     }
 
     @Test
-    void loginUser_InvalidPassword_ThrowsInvalidPasswordException(){
+    void loginUser_InvalidPassword_ThrowsInvalidPasswordException() {
         //Given
-        LoginRequestDto loginRequestDto= new LoginRequestDto("cristi113@gmail.com","password1223");
+        LoginRequestDto loginRequestDto = new LoginRequestDto("cristi113@gmail.com", "password1223");
 
-        User user=new User();
+        User user = new User();
         user.setEmail("cristi113@gmail.com");
         user.setPassword("password123");
 
@@ -161,6 +161,7 @@ class UserServiceTest {
         user2.setEmail("user2@example.com");
         user2.setPassword("password2");
 
+        // When
         List<User> mockUsers = List.of(user1, user2);
         when(mockedUserRepository.findAll()).thenReturn(mockUsers);
 
@@ -177,7 +178,6 @@ class UserServiceTest {
         when(mockedUserMapper.toUserDto(user1)).thenReturn(userDto1);
         when(mockedUserMapper.toUserDto(user2)).thenReturn(userDto2);
 
-        // When
         List<UserDto> result = userService.getAllUsers(null);
 
         // Then
@@ -186,8 +186,9 @@ class UserServiceTest {
         assertEquals(userDto2, result.get(1));
         verify(mockedUserRepository).findAll();
     }
+
     @Test
-    void getUserEntityById(){
+    void getUserEntityById() {
         //Given
         User user = new User();
         user.setId(1L);
@@ -198,11 +199,11 @@ class UserServiceTest {
         when(mockedUserRepository.findById(1L)).thenReturn(Optional.of(user));
 
         //Then
-        User resultedUser=userService.getUserEntityById(1L);
-        assertNotNull(resultedUser,"The list must have one element");
-        assertEquals("Cristi",resultedUser.getUsername());
-        assertEquals("cristi123@gmail.com",resultedUser.getEmail());
-        assertEquals("password123",resultedUser.getPassword());
+        User resultedUser = userService.getUserEntityById(1L);
+        assertNotNull(resultedUser, "The list must have one element");
+        assertEquals("Cristi", resultedUser.getUsername());
+        assertEquals("cristi123@gmail.com", resultedUser.getEmail());
+        assertEquals("password123", resultedUser.getPassword());
     }
 
     @Test
@@ -275,9 +276,4 @@ class UserServiceTest {
         assertThrows(UserNotFoundException.class, () -> userService.findByUsername(invalidUsername));
         verify(mockedUserRepository).findByUsername(invalidUsername);
     }
-
-
-
-
-
 }
